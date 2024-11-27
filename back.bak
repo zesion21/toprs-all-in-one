@@ -1,0 +1,1498 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 14.7
+-- Dumped by pg_dump version 16.4
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: for_test1(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.for_test1() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+declare counter integer:=0;
+begin
+    for i in 1..5 loop
+        counter := counter+i; 
+    end loop;
+    return counter;
+    
+end; $$;
+
+
+ALTER FUNCTION public.for_test1() OWNER TO postgres;
+
+--
+-- Name: hello(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.hello() RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+ 
+ FOR i IN  2..20 LOOP
+ 
+   UPDATE t_judgement_result SET  "Longitude" =  99+"floor"(random()*1000000) / 1000000 , "Latitude" = 23.1 + "floor"(random()*1000000) / 1000000 WHERE "JudgementID" = i ;
+
+ 
+END LOOP;
+
+
+ 
+  
+	RETURN;
+END$$;
+
+
+ALTER FUNCTION public.hello() OWNER TO postgres;
+
+--
+-- Name: g_ybssh_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.g_ybssh_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.g_ybssh_id_seq OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: t_application_base; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_application_base (
+    id integer NOT NULL,
+    applicant character varying(30),
+    serial_number character varying(40),
+    dept_id integer,
+    apply_date date,
+    "cast" numeric(10,2) DEFAULT 0.00 NOT NULL,
+    reason character varying(255),
+    use_time timestamp without time zone,
+    remark character varying(500),
+    c_num integer,
+    b_num integer,
+    cate_price numeric(10,2),
+    stay_price numeric(10,2),
+    stay_num integer,
+    wine_type smallint,
+    wine_price numeric(10,2),
+    other character varying(255),
+    other_price numeric(10,2),
+    state_id smallint,
+    start_state smallint,
+    "current_user" character varying(30),
+    create_time timestamp without time zone DEFAULT now(),
+    invoice_type smallint,
+    bx_amount numeric(10,2) DEFAULT 0.00 NOT NULL,
+    wine_report integer DEFAULT 0,
+    update_time timestamp without time zone DEFAULT now(),
+    report_time timestamp without time zone
+);
+
+
+ALTER TABLE public.t_application_base OWNER TO postgres;
+
+--
+-- Name: COLUMN t_application_base.applicant; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.applicant IS '申请人';
+
+
+--
+-- Name: COLUMN t_application_base.serial_number; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.serial_number IS '流水号';
+
+
+--
+-- Name: COLUMN t_application_base.dept_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.dept_id IS '部门id';
+
+
+--
+-- Name: COLUMN t_application_base.apply_date; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.apply_date IS '申请日期';
+
+
+--
+-- Name: COLUMN t_application_base.reason; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.reason IS '申请理由';
+
+
+--
+-- Name: COLUMN t_application_base.use_time; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.use_time IS '使用时间';
+
+
+--
+-- Name: COLUMN t_application_base."current_user"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base."current_user" IS '当前处理人';
+
+
+--
+-- Name: COLUMN t_application_base.invoice_type; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.invoice_type IS '发票类型';
+
+
+--
+-- Name: COLUMN t_application_base.bx_amount; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.bx_amount IS '报销金额';
+
+
+--
+-- Name: COLUMN t_application_base.update_time; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.update_time IS '修改时间';
+
+
+--
+-- Name: COLUMN t_application_base.report_time; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_application_base.report_time IS '填报时间';
+
+
+--
+-- Name: t_application_base_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_application_base_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.t_application_base_id_seq OWNER TO postgres;
+
+--
+-- Name: t_application_base_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.t_application_base_id_seq OWNED BY public.t_application_base.id;
+
+
+--
+-- Name: t_application_report; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_application_report (
+    appid integer NOT NULL,
+    cate_price numeric(10,2),
+    stay_price numeric(10,2),
+    wine_price numeric(10,2),
+    other_price numeric(10,2),
+    report_time timestamp(6) without time zone
+);
+
+
+ALTER TABLE public.t_application_report OWNER TO postgres;
+
+--
+-- Name: t_dept_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_dept_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+ALTER SEQUENCE public.t_dept_id_seq OWNER TO postgres;
+
+--
+-- Name: t_dept; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_dept (
+    id integer DEFAULT nextval('public.t_dept_id_seq'::regclass) NOT NULL,
+    dept_name character varying(50),
+    create_time timestamp(6) without time zone DEFAULT now() NOT NULL,
+    remark character varying(255),
+    parent_id integer,
+    "order" integer
+);
+
+
+ALTER TABLE public.t_dept OWNER TO postgres;
+
+--
+-- Name: t_dept__manager; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_dept__manager (
+    userid character varying(30),
+    dept_id integer
+);
+
+
+ALTER TABLE public.t_dept__manager OWNER TO postgres;
+
+--
+-- Name: t_invoice_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_invoice_type (
+    id integer NOT NULL,
+    invoice_name character varying(30)
+);
+
+
+ALTER TABLE public.t_invoice_type OWNER TO postgres;
+
+--
+-- Name: t_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+ALTER SEQUENCE public.t_log_id_seq OWNER TO postgres;
+
+--
+-- Name: t_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_log (
+    id integer DEFAULT nextval('public.t_log_id_seq'::regclass) NOT NULL,
+    log_type smallint,
+    log_content character varying(500),
+    ip character varying(15),
+    create_time timestamp(6) without time zone DEFAULT now(),
+    username character varying(20)
+);
+
+
+ALTER TABLE public.t_log OWNER TO postgres;
+
+--
+-- Name: COLUMN t_log.log_type; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_log.log_type IS '日志类型';
+
+
+--
+-- Name: COLUMN t_log.log_content; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_log.log_content IS '日志内容';
+
+
+--
+-- Name: COLUMN t_log.ip; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_log.ip IS '操作IP';
+
+
+--
+-- Name: COLUMN t_log.create_time; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_log.create_time IS '产生时间';
+
+
+--
+-- Name: COLUMN t_log.username; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_log.username IS '操作用户';
+
+
+--
+-- Name: t_log_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_log_type (
+    id integer NOT NULL,
+    log_type_name character varying(10) NOT NULL
+);
+
+
+ALTER TABLE public.t_log_type OWNER TO postgres;
+
+--
+-- Name: t_menu_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_menu_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147463847
+    CACHE 1
+    CYCLE;
+
+
+ALTER SEQUENCE public.t_menu_id_seq OWNER TO postgres;
+
+--
+-- Name: t_role_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1
+    CYCLE;
+
+
+ALTER SEQUENCE public.t_role_id_seq OWNER TO postgres;
+
+--
+-- Name: t_state; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_state (
+    id integer NOT NULL,
+    name character varying(20),
+    "order" smallint
+);
+
+
+ALTER TABLE public.t_state OWNER TO postgres;
+
+--
+-- Name: t_state_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_state_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.t_state_id_seq OWNER TO postgres;
+
+--
+-- Name: t_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.t_state_id_seq OWNED BY public.t_state.id;
+
+
+--
+-- Name: t_step; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_step (
+    id integer NOT NULL,
+    start_state integer,
+    end_state integer,
+    operator_id character varying(30),
+    create_time timestamp without time zone DEFAULT now(),
+    remark character varying(255),
+    next_id character varying(32),
+    app_id integer
+);
+
+
+ALTER TABLE public.t_step OWNER TO postgres;
+
+--
+-- Name: t_step_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_step_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.t_step_id_seq OWNER TO postgres;
+
+--
+-- Name: t_step_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.t_step_id_seq OWNED BY public.t_step.id;
+
+
+--
+-- Name: t_user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_user (
+    userid character varying(30) NOT NULL,
+    username character varying(25),
+    phone character varying(11),
+    mail character varying(50),
+    realname character varying(10),
+    password character varying(128),
+    create_time timestamp(6) without time zone DEFAULT now() NOT NULL,
+    dept_id integer,
+    title character varying(20),
+    work_place character varying(50),
+    remark character varying(255),
+    active smallint,
+    admin smallint,
+    boss smallint,
+    leader smallint
+);
+
+
+ALTER TABLE public.t_user OWNER TO postgres;
+
+--
+-- Name: COLUMN t_user.dept_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.t_user.dept_id IS '部门';
+
+
+--
+-- Name: t_user_dept_id; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_user_dept_id (
+    userid character varying(30),
+    dept_id integer
+);
+
+
+ALTER TABLE public.t_user_dept_id OWNER TO postgres;
+
+--
+-- Name: t_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.t_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+ALTER SEQUENCE public.t_user_id_seq OWNER TO postgres;
+
+--
+-- Name: t_application_base id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_application_base ALTER COLUMN id SET DEFAULT nextval('public.t_application_base_id_seq'::regclass);
+
+
+--
+-- Name: t_state id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_state ALTER COLUMN id SET DEFAULT nextval('public.t_state_id_seq'::regclass);
+
+
+--
+-- Name: t_step id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_step ALTER COLUMN id SET DEFAULT nextval('public.t_step_id_seq'::regclass);
+
+
+--
+-- Data for Name: t_application_base; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_application_base (id, applicant, serial_number, dept_id, apply_date, "cast", reason, use_time, remark, c_num, b_num, cate_price, stay_price, stay_num, wine_type, wine_price, other, other_price, state_id, start_state, "current_user", create_time, invoice_type, bx_amount, wine_report, update_time, report_time) FROM stdin;
+44	173224504030837787	20241116185919499885917	499885917	2024-11-16	1592.00	其他	2024-11-15 18:56:19.9	娱乐	\N	\N	\N	\N	\N	\N	\N		1592.00	1	\N	173224504030837787	2024-11-16 18:59:19.69703	\N	0.00	\N	2024-11-16 20:49:35.824	\N
+65	085258422035647797	2024112210274069608085	69608085	2024-11-22	1920.00	合作单位交流餐费	2024-11-21 10:26:15.718		10	2	1200.00	\N	\N	3	720.00	180*4	\N	4	\N	-1	2024-11-22 10:27:40.92522	\N	0.00	0	2024-11-22 14:51:53.052	\N
+41	055120096026033148	20241116132353913747391	913747391	2024-11-16	0.00	合作单位礼品	2024-11-15 13:23:19.472		\N	\N	\N	\N	\N	\N	\N	358每套，共2套	\N	2	\N	055120096026033148	2024-11-16 13:23:53.113939	\N	0.00	\N	2024-11-18 08:59:03.805	\N
+48	0615521317751130	20241117102206299921210	299921210	2024-11-17	3000.00	商务治谈用餐	2024-11-16 10:21:19.187		4	1	3000.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-17 10:22:06.167429	\N	0.00	\N	2024-11-18 08:59:23.593	\N
+42	173224504030837787	20241116185242499885917	499885917	2024-11-16	1917.00	合作单位交流餐费	2024-11-15 17:40:35.869		3	3	853.00	\N	\N	0	1064.00		\N	4	\N	-1	2024-11-16 18:52:42.340475	\N	0.00	\N	2024-11-18 08:59:54.07	\N
+43	173224504030837787	20241116185604499885917	499885917	2024-11-16	1600.00	合作单位交流用茶	2024-11-12 18:54:08.379	茶叶7盒	\N	\N	\N	\N	\N	\N	\N		1600.00	4	\N	-1	2024-11-16 18:56:04.45203	\N	0.00	\N	2024-11-18 09:00:18.175	\N
+45	160308385229342682	20241116205228499885917	499885917	2024-11-16	400.00	合作单位交流餐费	2024-11-13 20:52:17.119		3	1	400.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-16 20:52:28.758215	\N	0.00	0	2024-11-18 09:00:41.376	\N
+46	160308385229342682	20241116205304499885917	499885917	2024-11-16	200.00	合作单位交流餐费	2024-11-14 20:52:40.896		2	1	200.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-16 20:53:04.430487	\N	0.00	\N	2024-11-18 09:00:53.797	\N
+47	160308385229342682	2024111621264869570208	69570208	2024-11-16	3600.00	合作单位交流餐费	2024-11-11 21:24:25.824	内蒙项目第三方和监理，多次合计	15	3	3600.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-16 21:26:48.167173	\N	0.00	\N	2024-11-18 09:01:59.163	\N
+49	173224504030837787	20241117174207499885917	499885917	2024-11-17	3028.00	其他	2024-11-15 17:38:50.535	夜宵、娱乐	\N	\N	\N	\N	\N	\N	\N		3028.00	1	\N	173224504030837787	2024-11-17 17:42:07.012093	\N	0.00	\N	2024-11-18 10:15:53.915	\N
+70	212245440526387850	2024112516162569570208	69570208	2024-11-25	800.00	合作单位交流餐费	2024-11-27 16:16:00.368		6	2	800.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-25 16:16:25.944265	\N	0.00	\N	2024-11-26 16:10:53.609	\N
+53	173224504030837787	20241119170607499885917	499885917	2024-11-19	3200.00	其他	2024-11-15 17:05:39.282	a	\N	\N	\N	\N	\N	\N	\N		3200.00	1	\N	173224504030837787	2024-11-19 17:06:07.726227	\N	0.00	\N	2024-11-20 09:41:12.669	\N
+50	173224504030837787	20241118111523499885917	499885917	2024-11-18	3200.00	其他	2024-11-15 11:14:30.36	1	\N	\N	\N	\N	\N	\N	3200.00		\N	1	\N	173224504030837787	2024-11-18 11:15:23.527184	\N	0.00	\N	2024-11-19 11:20:57.088	\N
+51	2945616605941327	20241118141556499885917	499885917	2024-11-18	450.00	合作单位交流餐费	2024-11-17 14:14:52.072		4	2	450.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-18 14:15:56.898276	\N	0.00	\N	2024-11-19 11:21:14.642	\N
+54	201017690521444006	2024112009044467586938	67586938	2024-11-20	600.00	合作单位交流餐费	2024-11-20 09:02:49.057		5	3	600.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-20 09:04:44.308859	\N	0.00	\N	2024-11-20 09:41:48.363	\N
+56	085258422035647797	2024112017184069608085	69608085	2024-11-20	1280.00	合作单位交流餐费	2024-11-20 17:17:04.698		4	2	1100.00	\N	\N	2	180.00	30*6	\N	4	\N	-1	2024-11-20 17:18:40.778434	\N	0.00	0	2024-11-20 17:25:27.261	\N
+57	055120096026033148	20241121083903913747391	913747391	2024-11-21	716.00	合作单位礼品	2024-11-18 08:38:57.253		\N	\N	\N	\N	\N	\N	\N	伴手礼2套	716.00	4	\N	-1	2024-11-21 08:39:03.580341	\N	0.00	\N	2024-11-21 08:39:03.580341	\N
+59	0615521317751130	20241121151521299921210	299921210	2024-11-21	1800.00	商务治谈用餐	2024-11-21 15:14:43.762		4	2	1500.00	\N	\N	1	300.00		\N	4	\N	-1	2024-11-21 15:15:21.241808	\N	0.00	0	2024-11-21 15:41:29.941	\N
+58	0615521317751130	20241121151247299921210	299921210	2024-11-21	20000.00	招待客户休息	2024-11-21 15:12:33.644		\N	\N	\N	\N	\N	\N	\N	1	20000.00	4	\N	-1	2024-11-21 15:12:47.240678	\N	0.00	\N	2024-11-21 15:41:43.936	\N
+60	160308385229342682	20241121190117499885917	499885917	2023-12-31	1100.00	招待客户休息	2024-11-20 18:59:41		\N	\N	\N	1100.00	4	\N	\N		\N	4	\N	-1010	2024-11-21 19:01:17.070077	\N	0.00	\N	2024-11-25 11:11:55.096	\N
+55	173224504030837787	20241120094817499885917	499885917	2024-11-20	3200.00	其他	2024-11-15 09:47:43.44	招待客户休息	\N	\N	\N	\N	\N	\N	\N		3200.00	4	\N	-1	2024-11-20 09:48:17.239765	\N	0.00	\N	2024-11-22 08:25:27.858	\N
+61	160308385229342682	20241121190358499885917	499885917	2024-11-21	1300.00	合作单位交流餐费	2024-11-20 19:02:02.694		5	2	1300.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-21 19:03:58.872499	\N	0.00	\N	2024-11-22 08:26:18.974	\N
+62	160308385229342682	2024112119050469570208	69570208	2024-11-21	2640.00	合作单位交流餐费	2024-11-22 19:04:17.287		6	2	1600.00	\N	\N	0	1040.00		\N	4	\N	-1	2024-11-21 19:05:04.808604	\N	0.00	0	2024-11-22 08:26:41.296	\N
+64	160308385229342682	20241122100543499885917	499885917	2024-11-22	1100.00	招待客户休息	2024-11-20 10:05:28.728		\N	\N	\N	\N	\N	\N	\N		1100.00	4	\N	-1	2024-11-22 10:05:43.683082	\N	0.00	\N	2024-11-22 14:29:19.22	\N
+63	294606554536735436	2024112209400169608085	69608085	2023-12-31	1800.00	合作单位交流餐费	2024-11-25 09:37:51	使用时间有可能因协调情况延后	12	3	1200.00	\N	\N	2	600.00		\N	4	\N	-1	2024-11-22 09:40:01.464395	\N	0.00	0	2024-11-25 08:49:54.068	\N
+66	2945616605941327	20241125095011499885917	499885917	2024-11-25	4600.00	招待客户休息	2024-11-22 09:32:02.667	1	\N	\N	\N	\N	\N	\N	\N	招待客户休息4600元	4600.00	4	\N	-1	2024-11-25 09:50:11.855294	\N	0.00	\N	2024-11-25 17:00:54.622	\N
+67	085258422035647797	2024112515433469608085	69608085	2024-11-25	1183.00	合作单位交流餐费	2024-11-25 15:42:40.79	福州搬家请帮忙搬家其他公司人员用餐	5	2	983.00	\N	\N	2	200.00	一箱	\N	1	\N	085258422035647797	2024-11-25 15:43:34.256557	\N	0.00	0	2024-11-25 17:01:33.655	\N
+52	2945616605941327	20241119115652499885917	499885917	2023-12-31	104.00	其他	2024-11-15 11:47:57	1	\N	\N	\N	\N	\N	\N	\N	一包烟：55元\n代驾：45元\n停车费：4元	104.00	4	\N	-1	2024-11-19 11:56:52.08508	\N	0.00	\N	2024-11-25 09:43:47.278	\N
+68	212245440526387850	2024112516140969570208	69570208	2024-11-25	500.00	合作单位交流餐费	2024-11-25 16:12:43.55		4	2	500.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-25 16:14:09.278868	\N	0.00	\N	2024-11-26 08:44:43.477	\N
+69	212245440526387850	2024112516150369570208	69570208	2024-11-25	500.00	合作单位交流餐费	2024-11-26 16:14:29.19		4	2	500.00	\N	\N	\N	\N		\N	4	\N	-1	2024-11-25 16:15:03.700753	\N	0.00	\N	2024-11-26 08:48:02.277	\N
+71	0s13951296921732602197287	20241126150523395129692	395129692	2024-11-26	900.00	其他	2024-11-26 15:03:39.993	甲方检查工作招待用餐	6	2	900.00	\N	\N	\N	\N		\N	2	\N	2743140222780908	2024-11-26 15:05:23.121715	\N	0.00	\N	2024-11-26 15:05:23.121715	\N
+\.
+
+
+--
+-- Data for Name: t_application_report; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_application_report (appid, cate_price, stay_price, wine_price, other_price, report_time) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_dept; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_dept (id, dept_name, create_time, remark, parent_id, "order") FROM stdin;
+67586938	重点实验室	2024-11-07 12:41:12.592043	\N	1	16
+378980296	武汉子公司	2024-11-07 12:41:14.982332	\N	1	15
+69570208	遥感应用工程中心	2024-11-07 12:40:53.489843	\N	1	17
+913747391	浙江分公司	2024-11-07 12:40:58.062102	\N	1	23
+67586935	财务结算中心	2024-11-07 12:41:01.568363	\N	1	3
+395129692	陕西分公司	2024-11-07 12:41:01.769131	\N	1	21
+69608085	福建分公司	2024-11-07 12:41:03.986038	\N	1	19
+929850969	山东分公司	2024-11-07 12:41:07.321717	\N	1	24
+499885917	宁夏分公司	2024-11-07 12:41:07.485462	\N	1	18
+395245526	内蒙分公司	2024-11-07 12:41:07.709145	\N	1	22
+913907009	市场经营中心	2024-11-07 12:41:07.917363	\N	1	5
+930357260	河南分公司	2024-11-07 12:41:08.247538	\N	1	26
+299921210	广东分公司	2024-11-07 12:41:08.739496	\N	1	20
+69645117	四川分公司	2024-11-07 12:41:10.966808	\N	1	25
+33	总经办	2024-11-26 14:39:25.740756	\N	1	\N
+\.
+
+
+--
+-- Data for Name: t_dept__manager; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_dept__manager (userid, dept_id) FROM stdin;
+1732245041696295	69608085
+0615521317751130	299921210
+160308385229342682	499885917
+2743140222780908	395129692
+055120096026033148	913747391
+0632593502781128	395245526
+160308385229342682	69570208
+201017690521444006	67586938
+1732245041696295	913907009
+190061651726255035	67586935
+\.
+
+
+--
+-- Data for Name: t_invoice_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_invoice_type (id, invoice_name) FROM stdin;
+1	发票类型1
+2	发票类型2
+3	发票类型2
+4	发票类型2
+5	发票类型5
+\.
+
+
+--
+-- Data for Name: t_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_log (id, log_type, log_content, ip, create_time, username) FROM stdin;
+222	1	李泽琛==>登录成功	192.168.1.53	2024-11-07 15:17:07.340518	19920070841
+223	3	调用接口/dept/list 出错：ERROR: syntax error at or near "order"\n  位置：55	192.168.1.53	2024-11-07 15:17:38.50167	lizechen
+224	1	李泽琛==>登录成功	192.168.1.53	2024-11-07 15:25:06.786619	19920070841
+225	1	=>!手机号不存在	192.168.1.43	2024-11-07 16:25:15.93437	
+226	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-07 16:25:15.958088	\N
+227	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:25:45.964913	13681252213
+228	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:26:13.805857	13681252213
+229	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:29:25.995749	13681252213
+230	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:31:32.46811	13681252213
+231	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:43:14.459616	13681252213
+232	1	liuyining=>!手机号不存在	192.168.1.43	2024-11-07 16:43:51.203942	liuyining
+233	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-07 16:43:51.209654	\N
+234	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:44:00.316562	13681252213
+235	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:44:48.18579	13681252213
+236	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:45:08.232303	13681252213
+237	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 16:55:28.143321	13681252213
+238	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 17:02:21.1669	13681252213
+239	1	刘伊宁==>登录成功	192.168.1.43	2024-11-07 17:09:43.763604	13681252213
+240	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:38:20.456038	13681252213
+241	1	liuyining=>!手机号不存在	192.168.1.43	2024-11-08 09:39:42.631165	liuyining
+242	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-08 09:39:42.655374	\N
+243	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:39:50.029674	13681252213
+244	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:39:57.606566	13681252213
+245	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:40:21.26544	13681252213
+246	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:42:15.367907	13681252213
+247	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:54:12.306394	13681252213
+248	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 09:54:47.02924	13681252213
+249	3	调用接口/user/login 出错：ERROR: column "dept_name" does not exist\n  位置：128	192.168.1.53	2024-11-08 10:37:45.981454	\N
+250	3	调用接口/user/login 出错：ERROR: operator does not exist: character varying = bigint\n  建议：No operator matches the given name and argument types. You might need to add explicit type casts.\n  位置：51	192.168.1.53	2024-11-08 10:45:08.145621	\N
+251	1	李泽琛==>登录成功	192.168.1.53	2024-11-08 10:52:22.257755	19920070841
+252	1	李泽琛==>登录成功	192.168.1.53	2024-11-08 13:29:01.42156	19920070841
+253	1	李泽琛==>登录成功	192.168.1.53	2024-11-08 13:32:42.169173	19920070841
+254	1	李泽琛==>登录成功	192.168.1.53	2024-11-08 13:33:33.07554	19920070841
+255	1	李泽琛==>登录成功	192.168.1.53	2024-11-08 13:33:36.630991	19920070841
+256	1	李泽琛==>登录成功	192.168.1.53	2024-11-08 13:33:59.649869	19920070841
+257	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 14:07:23.723389	13681252213
+258	1	王炎川==>登录成功	192.168.1.43	2024-11-08 14:12:27.847537	15010854176
+259	1	王炎川==>登录成功	192.168.1.43	2024-11-08 14:12:53.209418	15010854176
+260	1	王炎川==>登录成功	192.168.1.43	2024-11-08 14:25:19.538027	15010854176
+261	1	王炎川==>登录成功	192.168.1.43	2024-11-08 14:26:44.735249	15010854176
+262	1	王炎川==>登录成功	192.168.1.43	2024-11-08 14:57:32.979748	15010854176
+263	1	刘伊宁==>登录成功	192.168.1.43	2024-11-08 15:20:43.598429	13681252213
+264	1	李泽琛==>登录成功	192.168.1.43	2024-11-08 15:21:18.570453	19920070841
+265	1	王炎川==>登录成功	192.168.1.43	2024-11-08 15:21:52.387039	15010854176
+266	1	王炎川==>登录成功	192.168.1.43	2024-11-08 15:39:55.203781	15010854176
+267	1	王炎川==>登录成功	192.168.1.43	2024-11-08 15:55:47.931886	15010854176
+268	3	调用接口/application/build 出错：ERROR: syntax error at or near "cast"\n  位置：91	192.168.1.53	2024-11-08 17:19:00.680272	lizechen
+269	3	调用接口/application/build 出错：ERROR: syntax error at or near "cast"\n  位置：87	192.168.1.53	2024-11-08 17:21:19.040247	lizechen
+270	3	调用接口/application/build 出错：ERROR: syntax error at or near "current_user"\n  位置：235	192.168.1.53	2024-11-08 17:21:55.448921	lizechen
+271	3	调用接口/application/build 出错：ERROR: value too long for type character varying(20)	192.168.1.53	2024-11-08 17:23:48.082712	lizechen
+272	3	调用接口/application/build 出错：ERROR: value "201017690521444006" is out of range for type integer\n  在位置：unnamed portal parameter $5 = '...'	192.168.1.53	2024-11-08 17:24:17.849199	lizechen
+273	3	调用接口/application/build 出错：ERROR: value "201017690521444006" is out of range for type integer\n  在位置：unnamed portal parameter $5 = '...'	192.168.1.53	2024-11-08 17:24:19.184003	lizechen
+274	3	调用接口/application/build 出错：ERROR: value "201017690521444006" is out of range for type integer\n  在位置：unnamed portal parameter $5 = '...'	192.168.1.53	2024-11-08 17:29:42.612942	lizechen
+275	1	李泽琛==>登录成功	192.168.1.53	2024-11-09 14:45:38.160054	19920070841
+276	1	李泽琛==>登录成功	192.168.1.43	2024-11-09 14:48:28.470057	19920070841
+277	3	调用接口/application/query 出错：JSON parse error: Cannot construct instance of `com.toprs.business.query.AppQuery` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('{\n  "pageNo": 1,\n  "pageSize": 10,\n  "type": 1,\n}')	192.168.1.43	2024-11-09 15:11:19.146403	wangyanchuan
+278	1	李泽琛==>登录成功	192.168.1.43	2024-11-09 15:11:45.787686	19920070841
+279	1	成国平==>登录成功	192.168.1.43	2024-11-09 15:12:00.782013	15111081904
+280	1	19920070841 =>!手机号不存在	192.168.1.43	2024-11-09 15:12:07.52496	19920070841 
+281	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-09 15:12:07.528354	wangyanchuan
+282	1	李泽琛==>登录成功	192.168.1.43	2024-11-09 15:12:12.116374	19920070841
+283	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-13T08:45:03.204Z": not a valid representation (error: Failed to parse Date value '2024-11-13T08:45:03.204Z': Unparseable date: "2024-11-13T08:45:03.204Z")	192.168.1.43	2024-11-09 16:45:23.352216	lizechen
+284	1	李泽琛==>登录成功	192.168.1.43	2024-11-09 17:18:55.06205	19920070841
+285	1	19920070841 =>!手机号不存在	192.168.1.43	2024-11-09 17:23:20.740795	19920070841 
+286	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-09 17:23:20.773712	\N
+287	1	李泽琛==>登录成功	192.168.1.43	2024-11-09 17:23:24.085222	19920070841
+288	3	调用接口/application/build 出错：ERROR: duplicate key value violates unique constraint "t_step_pkey"\n  详细：Key (id)=(3) already exists.	192.168.1.43	2024-11-09 17:27:27.495184	lizechen
+289	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-14T09:28:01.273Z": not a valid representation (error: Failed to parse Date value '2024-11-14T09:28:01.273Z': Unparseable date: "2024-11-14T09:28:01.273Z")	192.168.1.43	2024-11-09 17:28:15.671939	lizechen
+290	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-10-29T09:28:52.148Z": not a valid representation (error: Failed to parse Date value '2024-10-29T09:28:52.148Z': Unparseable date: "2024-10-29T09:28:52.148Z")	192.168.1.43	2024-11-09 17:29:06.208246	lizechen
+291	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-07T09:30:05.054Z": not a valid representation (error: Failed to parse Date value '2024-11-07T09:30:05.054Z': Unparseable date: "2024-11-07T09:30:05.054Z")	192.168.1.43	2024-11-09 17:30:10.541916	lizechen
+292	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-05T09:32:19.275Z": not a valid representation (error: Failed to parse Date value '2024-11-05T09:32:19.275Z': Unparseable date: "2024-11-05T09:32:19.275Z")	192.168.1.43	2024-11-09 17:32:28.587947	lizechen
+293	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-07T09:35:27.170Z": not a valid representation (error: Failed to parse Date value '2024-11-07T09:35:27.170Z': Unparseable date: "2024-11-07T09:35:27.170Z")	192.168.1.43	2024-11-09 17:35:35.169621	lizechen
+294	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-10-30T09:36:37.270Z": not a valid representation (error: Failed to parse Date value '2024-10-30T09:36:37.270Z': Unparseable date: "2024-10-30T09:36:37.270Z")	192.168.1.43	2024-11-09 17:36:43.557326	lizechen
+295	3	调用接口/application/export-data 出错：JSON parse error: Cannot construct instance of `com.toprs.business.query.AppQuery` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('{\n  "pageNo": 0,\n  "pageSize": 0,\n  "type": 0,\n  "userid": "",\n  "manager": true,\n  "boss": true,\n}')	192.168.1.53	2024-11-09 17:45:59.581381	lizechen
+296	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-28T09:47:24.752Z": not a valid representation (error: Failed to parse Date value '2024-11-28T09:47:24.752Z': Unparseable date: "2024-11-28T09:47:24.752Z")	192.168.1.43	2024-11-09 17:47:28.09308	lizechen
+297	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-6": not a valid representation (error: Failed to parse Date value '2024-11-6': Unparseable date: "2024-11-6")	192.168.1.43	2024-11-09 18:08:12.403854	lizechen
+298	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-06": not a valid representation (error: Failed to parse Date value '2024-11-06': Unparseable date: "2024-11-06")	192.168.1.43	2024-11-09 18:09:19.236293	lizechen
+299	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-0817:35:26": not a valid representation (error: Failed to parse Date value '2024-11-0817:35:26': Unparseable date: "2024-11-0817:35:26")	192.168.1.43	2024-11-09 18:14:22.087767	lizechen
+300	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.lang.Short` from String "啤酒": not a valid Short value	192.168.1.43	2024-11-09 18:37:51.037149	lizechen
+301	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.lang.Short` from String "啤酒": not a valid Short value	192.168.1.43	2024-11-09 18:38:49.765318	lizechen
+302	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.lang.Short` from String "啤酒": not a valid Short value	192.168.1.43	2024-11-09 18:41:15.771524	lizechen
+303	1	李泽琛==>登录成功	192.168.1.53	2024-11-11 09:06:28.151976	19920070841
+304	1	19920070841 =>!手机号不存在	192.168.1.43	2024-11-11 09:06:36.271859	19920070841 
+305	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-11 09:06:36.289835	\N
+306	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 09:06:38.54269	19920070841
+307	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 09:29:56.988285	19920070841
+308	1	匡秀梅==>登录成功	192.168.1.43	2024-11-11 10:22:27.608373	13683361742
+309	1	李泽琛==>登录成功	192.168.1.53	2024-11-11 10:27:00.589612	19920070841
+310	3	调用接口/statistic/by-dept 出错：ERROR: column "t_application_base.bx_amount" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：55	192.168.1.53	2024-11-11 10:27:33.939763	lizechen
+311	3	调用接口/statistic/by-dept 出错：ERROR: column "t_application_base.bx_amount" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：55	192.168.1.53	2024-11-11 10:27:46.00083	lizechen
+312	3	调用接口/statistic/by-dept 出错：ERROR: cross-database references are not implemented: public.t_application_base.coalesce\n  位置：8	192.168.1.53	2024-11-11 11:13:23.212607	lizechen
+313	3	调用接口/statistic/by-dept 出错：ERROR: schema "t_application_base" does not exist\n  位置：8	192.168.1.53	2024-11-11 11:16:29.767694	lizechen
+314	3	调用接口/statistic/by-dept 出错：ERROR: column "t_application_base.bx_amount" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：24	192.168.1.53	2024-11-11 11:57:51.751557	lizechen
+315	3	调用接口/statistic/by-dept 出错：ERROR: column "t_application_base.bx_amount" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：24	192.168.1.53	2024-11-11 12:21:21.332189	lizechen
+316	3	调用接口/statistic/by-dept 出错：ERROR: column "t_application_base.bx_amount" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：44	192.168.1.53	2024-11-11 12:35:14.930539	lizechen
+317	3	调用接口/statistic/by-dept 出错：ERROR: operator does not exist: character varying = integer\n  建议：No operator matches the given name and argument types. You might need to add explicit type casts.\n  位置：277	192.168.1.53	2024-11-11 12:40:43.215716	lizechen
+318	3	调用接口/statistic/by-dept 出错：ERROR: operator does not exist: character varying = integer\n  建议：No operator matches the given name and argument types. You might need to add explicit type casts.\n  位置：277	192.168.1.53	2024-11-11 12:51:55.141483	lizechen
+319	3	调用接口/statistic/by-dept 出错：ERROR: column "-1" does not exist\n  位置：279	192.168.1.53	2024-11-11 12:52:53.927102	lizechen
+320	3	调用接口/statistic/by-dept 出错：ERROR: column "-1" does not exist\n  位置：279	192.168.1.53	2024-11-11 12:52:55.090569	lizechen
+321	3	调用接口/application/approve 出错：该申请不存在	192.168.1.43	2024-11-11 14:06:01.897906	kuangxiumei
+322	3	调用接口/application/approve 出错：该申请不存在	192.168.1.43	2024-11-11 14:06:08.372162	kuangxiumei
+323	3	调用接口/application/approve 出错：该申请不存在	192.168.1.43	2024-11-11 14:06:42.141761	kuangxiumei
+324	3	调用接口/statistic/by-month 出错：ERROR: syntax error at or near "as"\n  位置：42	192.168.1.53	2024-11-11 14:06:42.202326	lizechen
+325	3	调用接口/application/approve 出错：该申请不存在	192.168.1.43	2024-11-11 14:07:18.360894	kuangxiumei
+326	3	调用接口/application/approve 出错：ERROR: column "app_id" does not exist\n  建议：Perhaps you meant to reference the column "t_application_base.dept_id".\n  位置：79	192.168.1.43	2024-11-11 14:07:49.127366	kuangxiumei
+327	3	调用接口/application/approve 出错：ERROR: column "app_id" does not exist\n  建议：Perhaps you meant to reference the column "t_application_base.dept_id".\n  位置：79	192.168.1.43	2024-11-11 14:08:22.822204	kuangxiumei
+328	3	调用接口/application/approve 出错：ERROR: column "app_id" does not exist\n  建议：Perhaps you meant to reference the column "t_application_base.dept_id".\n  位置：79	192.168.1.43	2024-11-11 14:11:02.281192	kuangxiumei
+329	3	调用接口/statistic/by-month 出错：ERROR: column "t_dept.dept_name" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：155	192.168.1.53	2024-11-11 14:13:48.66742	lizechen
+330	3	调用接口/statistic/by-month 出错：ERROR: column "t_dept.dept_name" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：155	192.168.1.53	2024-11-11 14:14:48.867049	lizechen
+331	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 14:35:37.72166	19920070841
+332	1	吴涛==>登录成功	192.168.1.43	2024-11-11 14:47:37.014972	15001339523
+333	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 14:48:57.558287	19920070841
+334	3	调用接口/application/build 出错：ERROR: null value in column "bx_amount" of relation "t_application_base" violates not-null constraint\n  详细：Failing row contains (23, 205303261026309260, 2024111114521467586938, 67586938, 2024-11-11, 4333.00, 合作单位住宿费用, 2024-11-30 14:50:39.978, 合作, 10, 10, 200.00, 300.00, 2, 2, 500.00, 交通   3333, 3333.00, 2, null, 201017690521444006, 2024-11-11 14:52:14.353876, null, null).	192.168.1.43	2024-11-11 14:52:14.43848	lizechen
+335	3	调用接口/application/build 出错：ERROR: null value in column "bx_amount" of relation "t_application_base" violates not-null constraint\n  详细：Failing row contains (24, 205303261026309260, 2024111115014967586938, 67586938, 2024-11-11, 0.00, 合作单位交流用茶, 2024-11-13 15:01:46.596, 111, null, null, null, null, null, null, null, , null, 2, null, 201017690521444006, 2024-11-11 15:01:49.497232, null, null).	192.168.1.43	2024-11-11 15:01:49.501364	lizechen
+336	3	调用接口/application/baseInfo/5 出错：申请不存在或已被删除！	192.168.1.43	2024-11-11 15:02:14.844321	lizechen
+337	3	调用接口/application/build 出错：ERROR: null value in column "bx_amount" of relation "t_application_base" violates not-null constraint\n  详细：Failing row contains (25, 205303261026309260, 2024111115025267586938, 67586938, 2024-11-11, 68.00, 合作单位交流用茶, 2024-11-13 15:01:46.596, 111, 22, 22, 22.00, 2.00, 2, 1, 22.00, 22, 22.00, 2, null, 201017690521444006, 2024-11-11 15:02:52.414067, null, null).	192.168.1.43	2024-11-11 15:02:52.417126	lizechen
+338	1	匡秀梅==>登录成功	192.168.1.43	2024-11-11 15:05:17.834493	13683361742
+339	1	吴涛==>登录成功	192.168.1.43	2024-11-11 15:06:09.320975	15001339523
+340	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 15:07:03.086761	19920070841
+341	1	匡秀梅==>登录成功	192.168.1.43	2024-11-11 15:12:52.234108	13683361742
+342	3	调用接口/statistic/by-month 出错：ERROR: syntax error at or near ","\n  位置：17	192.168.1.53	2024-11-11 15:14:26.337142	lizechen
+343	3	调用接口/statistic/by-month 出错：ERROR: syntax error at or near ","\n  位置：17	192.168.1.53	2024-11-11 15:14:30.478769	lizechen
+344	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 15:14:53.329242	19920070841
+345	3	调用接口/statistic/by-month 出错：ERROR: column "t_application_base.apply_date" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：181	192.168.1.53	2024-11-11 15:15:44.506319	lizechen
+346	3	调用接口/statistic/by-month 出错：ERROR: column "t_application_base.apply_date" must appear in the GROUP BY clause or be used in an aggregate function\n  位置：181	192.168.1.53	2024-11-11 15:16:23.452034	lizechen
+347	1	吴涛==>登录成功	192.168.1.43	2024-11-11 15:19:50.840232	15001339523
+348	1	匡秀梅==>登录成功	192.168.1.43	2024-11-11 15:20:05.684682	13683361742
+349	1	吴涛==>登录成功	192.168.1.43	2024-11-11 15:20:31.558384	15001339523
+350	3	调用接口/statistic/by-month 出错：ERROR: missing FROM-clause entry for table "t_application_base"\n  位置：302	192.168.1.53	2024-11-11 15:22:34.83627	lizechen
+351	3	调用接口/statistic/by-month 出错：ERROR: missing FROM-clause entry for table "t_application_base"\n  位置：302	192.168.1.53	2024-11-11 15:22:36.112135	lizechen
+352	1	11222=>!手机号不存在	192.168.1.43	2024-11-11 15:23:46.420176	11222
+353	3	调用接口/user/login 出错：手机号未注册！	192.168.1.43	2024-11-11 15:23:46.424163	\N
+354	1	李泽琛==>登录成功	192.168.1.43	2024-11-11 15:25:28.354279	19920070841
+355	3	调用接口/statistic/by-month 出错：ERROR: column t1.dept_id does not exist\n  位置：305	192.168.1.53	2024-11-11 15:32:47.365864	lizechen
+356	3	调用接口/statistic/by-month 出错：ERROR: column t1.dept_id does not exist\n  位置：305	192.168.1.53	2024-11-11 15:32:48.30092	lizechen
+357	3	调用接口/statistic/by-month 出错：ERROR: missing FROM-clause entry for table "t_application_base"\n  位置：37	192.168.1.53	2024-11-11 15:33:34.367954	lizechen
+358	1	李泽琛==>登录成功	192.168.1.43	2024-11-12 08:49:48.08632	19920070841
+359	1	李泽琛==>登录成功	192.168.1.43	2024-11-12 08:49:51.854388	19920070841
+360	1	李泽琛==>登录成功	192.168.1.53	2024-11-12 10:17:02.732508	19920070841
+361	3	调用接口/application/import-data 出错：文件不能为空！	192.168.1.53	2024-11-12 10:52:03.625086	lizechen
+362	3	调用接口/application/import-data 出错：ERROR: duplicate key value violates unique constraint "t_application_base_pkey"\n  详细：Key (id)=(26) already exists.	192.168.1.53	2024-11-12 11:05:32.946804	lizechen
+363	1	王炎川==>登录成功	192.168.1.43	2024-11-12 14:33:33.728679	15010854176
+364	3	调用接口/application/build 出错：没有部门负责人	192.168.1.43	2024-11-12 14:34:20.948503	wangyanchuan
+365	3	调用接口/application/build 出错：没有部门负责人	192.168.1.43	2024-11-12 14:35:44.353157	wangyanchuan
+366	1	成国平==>登录成功	192.168.1.43	2024-11-12 14:36:32.502983	15111081904
+367	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.43	2024-11-12 14:36:57.508745	chengguoping
+368	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.43	2024-11-12 14:41:38.319582	chengguoping
+369	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.43	2024-11-12 14:45:11.941713	chengguoping
+370	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 14:46:35.483377	lizechen
+371	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 14:51:29.613666	lizechen
+372	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 14:51:30.603151	lizechen
+373	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 14:51:30.831248	lizechen
+374	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 14:51:31.044311	lizechen
+375	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 14:51:31.236806	lizechen
+376	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:00:13.521431	lizechen
+377	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:00:14.288394	lizechen
+378	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:00:14.467458	lizechen
+379	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:00:14.62415	lizechen
+380	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:00:53.510718	lizechen
+381	1	吴涛==>登录成功	192.168.1.43	2024-11-12 15:17:56.114299	15001339523
+382	1	吴涛==>登录成功	192.168.1.43	2024-11-12 15:19:57.096539	15001339523
+383	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:22:53.803105	lizechen
+384	3	调用接口/application/build 出错：ERROR: cannot perform INSERT RETURNING on relation "t_application_base"\n  建议：You need an unconditional ON INSERT DO INSTEAD rule with a RETURNING clause.	192.168.1.53	2024-11-12 15:26:15.312993	lizechen
+385	1	匡秀梅==>登录成功	192.168.1.43	2024-11-12 15:26:15.374888	13683361742
+386	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-12T07:29:05.617Z": not a valid representation (error: Failed to parse Date value '2024-11-12T07:29:05.617Z': Unparseable date: "2024-11-12T07:29:05.617Z")	192.168.1.43	2024-11-12 15:29:06.904589	chengguoping
+387	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-12T07:29:05.617Z": not a valid representation (error: Failed to parse Date value '2024-11-12T07:29:05.617Z': Unparseable date: "2024-11-12T07:29:05.617Z")	192.168.1.43	2024-11-12 15:29:28.797103	chengguoping
+388	3	调用接口/application/build 出错：JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2024-11-12T07:29:54.889Z": not a valid representation (error: Failed to parse Date value '2024-11-12T07:29:54.889Z': Unparseable date: "2024-11-12T07:29:54.889Z")	192.168.1.43	2024-11-12 15:29:54.972632	chengguoping
+389	1	成国平==>登录成功	192.168.1.43	2024-11-12 15:34:51.675018	15111081904
+390	1	成国平==>登录成功	192.168.1.43	2024-11-12 15:37:42.886359	15111081904
+391	1	匡秀梅==>登录成功	192.168.1.43	2024-11-12 15:43:36.303904	13683361742
+392	1	吴涛==>登录成功	192.168.1.43	2024-11-12 16:56:06.876374	15001339523
+393	1	李泽琛==>登录成功	192.168.1.53	2024-11-13 08:54:35.861895	19920070841
+394	1	吴涛==>登录成功	192.168.1.53	2024-11-13 09:25:31.933515	15001339523
+395	1	匡秀梅==>登录成功	192.168.1.43	2024-11-13 13:34:20.021203	13683361742
+396	1	吴涛==>登录成功	192.168.1.43	2024-11-13 15:18:37.513124	15001339523
+397	1	吴涛==>登录成功	192.168.1.53	2024-11-14 10:02:49.892516	15001339523
+398	1	成国平==>登录成功	192.168.1.43	2024-11-14 11:10:56.081613	15111081904
+399	1	匡秀梅==>登录成功	192.168.1.43	2024-11-14 11:13:02.777877	13683361742
+400	1	成国平==>登录成功	192.168.1.43	2024-11-14 11:14:48.880347	15111081904
+401	1	匡秀梅==>登录成功	192.168.1.43	2024-11-14 11:18:03.084736	13683361742
+402	1	吴涛==>登录成功	192.168.1.43	2024-11-14 11:18:24.802997	15001339523
+403	1	匡秀梅==>登录成功	192.168.1.43	2024-11-14 14:06:05.172858	13683361742
+404	1	吴涛==>登录成功	192.168.1.53	2024-11-14 14:16:05.670379	15001339523
+405	1	匡秀梅==>登录成功	192.168.1.43	2024-11-15 10:44:24.25582	13683361742
+406	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:47:33.872769	吴涛
+407	1	吴涛==>登录成功	192.168.1.43	2024-11-15 10:47:47.11707	15001339523
+408	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:50:26.05512	吴涛
+409	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:52:40.215593	吴涛
+410	1	吴涛==>登录成功	192.168.1.43	2024-11-15 10:52:48.527363	15001339523
+411	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:52:50.122329	吴涛
+412	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:55:15.932657	吴涛
+413	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:56:14.326188	吴涛
+414	1	吴涛<==退出登录	192.168.1.43	2024-11-15 10:56:23.11011	吴涛
+415	1	吴涛==>登录成功	192.168.1.43	2024-11-15 11:09:02.860671	15001339523
+416	1	吴涛==>登录成功	192.168.1.43	2024-11-15 11:09:12.097063	15001339523
+417	1	成国平==>登录成功	192.168.1.43	2024-11-15 11:09:28.993159	15111081904
+418	1	成国平==>登录成功	192.168.1.43	2024-11-15 14:28:43.472824	15111081904
+419	1	成国平==>登录成功	192.168.1.43	2024-11-15 14:29:59.349329	15111081904
+420	1	李志伟==>登录成功	192.168.1.43	2024-11-15 14:35:46.91444	18511047985
+421	1	成国平<==退出登录	192.168.1.43	2024-11-15 15:22:22.928315	成国平
+422	1	李志伟==>登录成功	192.168.1.43	2024-11-15 15:22:43.801898	18511047985
+423	1	李志伟<==退出登录	192.168.1.43	2024-11-15 15:27:49.774497	李志伟
+424	1	成国平==>登录成功	192.168.1.43	2024-11-15 15:27:55.066299	15111081904
+425	1	成国平<==退出登录	192.168.1.43	2024-11-15 15:27:57.1497	成国平
+426	1	李志伟==>登录成功	192.168.1.43	2024-11-15 15:28:20.555149	18511047985
+427	1	李志伟<==退出登录	192.168.1.43	2024-11-15 15:28:39.374712	李志伟
+428	1	李新芝==>登录成功	192.168.1.43	2024-11-15 15:28:41.725492	15001360098
+429	1	李新芝<==退出登录	192.168.1.43	2024-11-15 15:28:50.351076	李新芝
+430	1	李志伟==>登录成功	192.168.1.43	2024-11-15 15:29:02.296507	18511047985
+431	1	李泽琛==>登录成功	192.168.0.201	2024-11-15 15:52:10.925525	19920070841
+432	1	成国平==>登录成功	192.168.0.201	2024-11-15 15:52:48.689445	15111081904
+433	1	成国平==>登录成功	192.168.0.201	2024-11-15 15:58:00.027114	15111081904
+434	1	吴涛==>登录成功	192.168.0.201	2024-11-15 16:01:13.261467	15001339523
+435	1	成国平==>登录成功	192.168.0.201	2024-11-15 16:02:45.180185	15111081904
+436	1	匡秀梅==>登录成功	192.168.0.201	2024-11-15 16:09:18.097698	13683361742
+437	1	19511047985=>!手机号不存在	192.168.0.201	2024-11-15 16:15:21.935389	19511047985
+438	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-15 16:15:21.940645	kuangxiumei
+439	1	19511047985=>!手机号不存在	192.168.0.201	2024-11-15 16:15:23.669037	19511047985
+440	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-15 16:15:23.67032	kuangxiumei
+441	1	李志伟==>登录成功	192.168.0.201	2024-11-15 16:15:29.710497	18511047985
+442	1	成国平==>登录成功	192.168.0.201	2024-11-15 16:18:15.463325	15111081904
+443	1	成国平==>登录成功	192.168.0.201	2024-11-15 16:21:32.161816	15111081904
+444	1	成国平==>登录成功	192.168.0.201	2024-11-15 16:27:32.900983	15111081904
+445	1	15210951140=>!密码错误	192.168.0.201	2024-11-16 12:25:42.942399	15210951140
+446	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-16 12:25:42.945683	lizhiwei
+447	1	王炎川==>登录成功	192.168.0.201	2024-11-16 13:08:03.448807	15010854176
+448	1	曹化龙==>登录成功	192.168.0.201	2024-11-16 13:22:38.653336	18610043835
+449	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-16 17:31:47.653732	18629036453
+450	1	王炎川==>登录成功	192.168.0.201	2024-11-16 20:47:06.774784	15010854176
+451	1	王炎川<==退出登录	192.168.0.201	2024-11-16 21:08:39.150073	王炎川
+452	1	王炎川==>登录成功	192.168.0.201	2024-11-16 21:08:41.43779	15010854176
+453	1	王炎川==>登录成功	192.168.0.201	2024-11-16 23:53:11.32084	15010854176
+454	1	孙晓==>登录成功	192.168.0.201	2024-11-17 10:21:01.515548	15210951140
+455	1	王炎川==>登录成功	192.168.0.201	2024-11-17 11:18:09.319324	15010854176
+456	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-17 17:32:03.371909	18629036453
+457	1	孙晓==>登录成功	192.168.0.201	2024-11-18 08:47:33.114732	15210951140
+458	1	孙晓<==退出登录	192.168.0.201	2024-11-18 08:48:16.385258	孙晓
+459	1	孙晓==>登录成功	192.168.0.201	2024-11-18 08:48:39.673066	15210951140
+460	1	高有英==>登录成功	192.168.0.201	2024-11-18 08:51:32.31356	13612635216
+461	1	孙晓==>登录成功	192.168.0.201	2024-11-18 08:54:05.954759	15210951140
+462	1	孙晓<==退出登录	192.168.0.201	2024-11-18 08:54:46.099542	孙晓
+463	1	15001369523=>!手机号不存在	192.168.0.201	2024-11-18 08:55:58.268536	15001369523
+464	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-18 08:55:58.270635	sunxiao
+465	1	吴涛==>登录成功	192.168.0.201	2024-11-18 08:56:10.000281	15001339523
+466	1	吴涛==>登录成功	192.168.0.201	2024-11-18 08:57:18.897384	15001339523
+467	1	王炎川==>登录成功	192.168.0.201	2024-11-18 10:03:17.964495	15010854176
+468	1	李志伟==>登录成功	192.168.0.201	2024-11-18 10:18:37.558259	18511047985
+469	1	孙晓==>登录成功	192.168.0.201	2024-11-18 10:32:49.594755	15210951140
+470	1	王强==>登录成功	192.168.0.201	2024-11-18 14:13:59.606841	18695247141
+471	1	赵杨杨==>登录成功	192.168.0.201	2024-11-18 16:55:32.279736	15101100462
+472	1	邢贺群==>登录成功	192.168.0.201	2024-11-18 16:59:17.786548	18031412829
+473	1	郭胜培==>登录成功	192.168.0.201	2024-11-18 16:59:32.214788	17600060061
+474	1	赵杨杨==>登录成功	192.168.0.201	2024-11-18 17:01:14.321565	15101100462
+475	1	李志伟==>登录成功	192.168.0.201	2024-11-19 08:49:41.435104	18511047985
+476	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-19 09:09:24.051645	18629036453
+477	1	李志伟==>登录成功	192.168.0.201	2024-11-19 10:34:36.563762	18511047985
+478	1	吴涛==>登录成功	192.168.0.201	2024-11-19 10:49:15.05231	15001339523
+479	1	吴涛<==退出登录	192.168.0.201	2024-11-19 10:49:31.462811	吴涛
+480	1	李志伟==>登录成功	192.168.0.201	2024-11-19 10:49:38.009783	18511047985
+481	1	李志伟<==退出登录	192.168.0.201	2024-11-19 10:49:55.726395	李志伟
+482	1	吴涛==>登录成功	192.168.0.201	2024-11-19 10:49:58.648049	15001339523
+483	1	吴涛<==退出登录	192.168.0.201	2024-11-19 10:50:38.270879	吴涛
+484	1	吴涛==>登录成功	192.168.0.201	2024-11-19 10:51:46.647483	15001339523
+485	1	吴涛==>登录成功	192.168.0.201	2024-11-19 11:05:22.605923	15001339523
+486	1	李志伟==>登录成功	192.168.0.201	2024-11-19 11:06:11.825356	18511047985
+487	1	李志伟<==退出登录	192.168.0.201	2024-11-19 11:07:45.022158	李志伟
+488	1	吴涛==>登录成功	192.168.0.201	2024-11-19 11:08:08.549743	15001339523
+489	1	吴涛<==退出登录	192.168.0.201	2024-11-19 11:08:17.345759	吴涛
+490	1	匡秀梅==>登录成功	192.168.0.201	2024-11-19 11:12:15.241305	13683361742
+491	1	吴涛==>登录成功	192.168.0.201	2024-11-19 11:15:29.923435	15001339523
+492	1	李志伟<==退出登录	192.168.0.201	2024-11-19 11:18:14.888336	李志伟
+493	1	吴涛==>登录成功	192.168.0.201	2024-11-19 11:18:45.618296	15001339523
+494	1	吴涛<==退出登录	192.168.0.201	2024-11-19 13:51:01.775545	吴涛
+495	1	吴涛==>登录成功	192.168.0.201	2024-11-19 13:51:03.655141	15001339523
+496	1	吴涛==>登录成功	192.168.0.201	2024-11-19 17:02:01.103258	15001339523
+497	1	王强==>登录成功	192.168.0.201	2024-11-19 17:28:26.350407	18695247141
+498	1	王强<==退出登录	192.168.0.201	2024-11-19 17:29:16.833251	王强
+499	1	王强==>登录成功	192.168.0.201	2024-11-20 08:58:36.838738	18695247141
+500	1	匡秀梅==>登录成功	192.168.0.201	2024-11-20 09:02:11.164832	13683361742
+501	1	王炎川==>登录成功	192.168.0.201	2024-11-20 09:05:40.138681	15010854176
+502	1	吴涛<==退出登录	192.168.0.201	2024-11-20 09:33:45.383943	吴涛
+503	1	李志伟==>登录成功	192.168.0.201	2024-11-20 09:33:58.221511	18511047985
+504	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-20 09:47:15.918813	18629036453
+505	1	孙晓==>登录成功	192.168.0.201	2024-11-20 09:52:44.165131	15210951140
+506	1	李志伟==>登录成功	192.168.0.201	2024-11-20 15:32:46.448112	18511047985
+507	1	李志伟<==退出登录	192.168.0.201	2024-11-20 15:38:56.492332	李志伟
+508	1	李志伟==>登录成功	192.168.0.201	2024-11-20 15:39:15.918225	18511047985
+509	1	李志伟<==退出登录	192.168.0.201	2024-11-20 15:44:47.392306	李志伟
+510	1	成国平==>登录成功	192.168.0.201	2024-11-20 15:44:52.691439	15111081904
+511	1	李志伟==>登录成功	192.168.0.201	2024-11-20 15:46:40.709991	18511047985
+512	1	成国平==>登录成功	192.168.0.201	2024-11-20 15:48:18.940596	15111081904
+513	1	吴涛<==退出登录	192.168.0.201	2024-11-20 15:51:52.792652	吴涛
+514	1	吴涛==>登录成功	192.168.0.201	2024-11-20 15:52:05.455741	15001339523
+515	1	成国平==>登录成功	192.168.0.201	2024-11-20 15:56:02.695474	15111081904
+516	1	高有英==>登录成功	192.168.0.201	2024-11-20 16:01:17.077907	13612635216
+517	1	高有英<==退出登录	192.168.0.201	2024-11-20 16:01:35.272745	高有英
+518	1	高有英==>登录成功	192.168.0.201	2024-11-20 16:01:46.360126	13612635216
+519	1	孙晓==>登录成功	192.168.0.201	2024-11-20 16:02:57.595259	15210951140
+520	1	孙晓<==退出登录	192.168.0.201	2024-11-20 16:03:06.901172	孙晓
+521	1	孙晓==>登录成功	192.168.0.201	2024-11-20 16:03:15.792128	15210951140
+522	1	孙晓<==退出登录	192.168.0.201	2024-11-20 16:23:43.60486	孙晓
+523	1	孙晓==>登录成功	192.168.0.201	2024-11-20 16:25:22.098009	15210951140
+524	1	孙晓==>登录成功	192.168.0.201	2024-11-20 16:27:09.388521	15210951140
+525	1	孙晓==>登录成功	192.168.0.201	2024-11-20 16:29:18.124036	15210951140
+526	1	高有英==>登录成功	192.168.0.201	2024-11-20 16:32:00.400078	13612635216
+527	1	高有英==>登录成功	192.168.0.201	2024-11-20 16:32:38.74614	13612635216
+528	1	孙晓==>登录成功	192.168.0.201	2024-11-20 16:40:03.459816	15210951140
+529	1	孙晓<==退出登录	192.168.0.201	2024-11-20 16:40:50.082843	孙晓
+530	1	窦亚鹏<==退出登录	192.168.0.201	2024-11-20 16:43:04.180105	窦亚鹏
+531	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-20 16:43:10.602782	18629036453
+532	1	周孟德==>登录成功	192.168.0.201	2024-11-20 16:45:00.019521	18042820205
+533	1	窦亚鹏<==退出登录	192.168.0.201	2024-11-20 16:45:18.818686	窦亚鹏
+534	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-20 16:45:23.150485	18629036453
+535	1	周孟德<==退出登录	192.168.0.201	2024-11-20 16:45:40.627002	周孟德
+536	1	周孟德==>登录成功	192.168.0.201	2024-11-20 16:45:48.753711	18042820205
+537	1	王强<==退出登录	192.168.0.201	2024-11-20 17:16:11.148135	王强
+538	1	王强==>登录成功	192.168.0.201	2024-11-20 17:16:12.642546	18695247141
+539	1	赵杨杨==>登录成功	192.168.0.201	2024-11-20 17:16:39.923544	15101100462
+540	1	曹化龙==>登录成功	192.168.0.201	2024-11-21 08:36:52.915269	18610043835
+541	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-21 11:43:50.89098	18629036453
+542	1	孙晓==>登录成功	192.168.0.201	2024-11-21 15:11:22.232866	15210951140
+543	1	吴涛==>登录成功	192.168.0.201	2024-11-21 16:01:33.485099	15001339523
+544	1	王炎川==>登录成功	192.168.0.201	2024-11-21 18:58:57.078022	15010854176
+545	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-22 08:41:17.640915	18629036453
+546	1	窦亚鹏<==退出登录	192.168.0.201	2024-11-22 08:41:43.763775	窦亚鹏
+547	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-22 08:41:55.002586	18629036453
+548	1	邢贺群==>登录成功	192.168.0.201	2024-11-22 09:35:41.866666	18031412829
+549	1	赵杨杨==>登录成功	192.168.0.201	2024-11-22 10:25:49.185677	15101100462
+550	1	成国平==>登录成功	192.168.0.201	2024-11-22 14:18:18.221378	15111081904
+551	1	赵杨杨==>登录成功	192.168.0.201	2024-11-22 14:35:14.486804	15101100462
+552	1	孙晓==>登录成功	192.168.0.201	2024-11-22 14:35:30.995632	15210951140
+553	1	邢贺群==>登录成功	192.168.0.201	2024-11-22 14:38:01.218089	18031412829
+554	1	邢贺群<==退出登录	192.168.0.201	2024-11-22 15:54:47.057425	邢贺群
+555	1	王炎川==>登录成功	192.168.0.201	2024-11-22 23:44:33.60953	15010854176
+556	1	窦亚鹏==>登录成功	192.168.0.201	2024-11-25 08:30:15.65203	18629036453
+557	1	王炎川==>登录成功	192.168.0.201	2024-11-25 08:38:20.382839	15010854176
+558	1	吴涛==>登录成功	192.168.0.201	2024-11-25 08:49:29.629146	15001339523
+559	1	王强==>登录成功	192.168.0.201	2024-11-25 09:28:42.844195	18695247141
+560	1	李志伟==>登录成功	192.168.0.201	2024-11-25 11:13:25.697636	18511047985
+561	1	李志伟==>登录成功	192.168.0.201	2024-11-25 11:16:18.035588	18511047985
+562	1	李志伟==>登录成功	192.168.0.201	2024-11-25 11:17:22.301486	18511047985
+563	1	李志伟==>登录成功	192.168.0.201	2024-11-25 11:20:25.227261	18511047985
+564	1	李志伟==>登录成功	192.168.0.201	2024-11-25 15:13:31.139898	18511047985
+565	1	李志伟<==退出登录	192.168.0.201	2024-11-25 15:19:59.939538	李志伟
+566	1	赵杨杨==>登录成功	192.168.0.201	2024-11-25 15:42:21.177595	15101100462
+567	1	李盛男==>登录成功	192.168.0.201	2024-11-25 16:10:34.428427	13810522967
+568	1	王炎川==>登录成功	192.168.0.201	2024-11-26 08:43:53.151698	15010854176
+569	1	张斌==>登录成功	192.168.0.201	2024-11-26 11:26:33.261345	18801023339
+570	1	18513553339=>!手机号不存在	192.168.0.201	2024-11-26 11:37:51.461705	18513553339
+571	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:37:51.469382	wangyanchuan
+572	1	18513553339=>!手机号不存在	192.168.0.201	2024-11-26 11:38:32.188469	18513553339
+573	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:38:32.189608	zhangbin
+574	1	18513553339=>!手机号不存在	192.168.0.201	2024-11-26 11:38:49.479047	18513553339
+575	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:38:49.48036	zhangbin
+576	1	18201684410=>!手机号不存在	192.168.0.201	2024-11-26 11:38:56.988142	18201684410
+577	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:38:56.989222	zhangbin
+578	1	18513553339=>!手机号不存在	192.168.0.201	2024-11-26 11:39:07.068127	18513553339
+579	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:39:07.069257	zhangbin
+580	1	18513553339=>!手机号不存在	192.168.0.201	2024-11-26 11:39:12.09815	18513553339
+581	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:39:12.099221	zhangbin
+582	1	18201684410=>!手机号不存在	192.168.0.201	2024-11-26 11:54:21.953227	18201684410
+583	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 11:54:21.954358	zhangbin
+584	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:37:29.270461	18811049897
+585	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:37:29.273746	zhangbin
+586	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:38:01.981453	18811049897
+587	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:38:01.98249	zhangbin
+588	1	李盛男==>登录成功	192.168.0.201	2024-11-26 13:45:26.917222	13810522967
+589	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:46:32.037298	18811049897
+590	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:46:32.03843	lishengnan
+591	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:46:33.18752	18811049897
+592	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:46:33.188528	lishengnan
+593	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:46:33.575127	18811049897
+594	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:46:33.576153	lishengnan
+595	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:46:33.733738	18811049897
+596	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:46:33.734702	lishengnan
+597	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:46:33.868528	18811049897
+598	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:46:33.871573	lishengnan
+599	1	18811049897=>!手机号不存在	192.168.0.201	2024-11-26 13:46:34.007701	18811049897
+600	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 13:46:34.008613	lishengnan
+601	1	李志伟==>登录成功	192.168.0.201	2024-11-26 13:47:59.274691	18511047985
+602	1	李志伟==>登录成功	192.168.0.201	2024-11-26 14:18:36.262466	18511047985
+603	1	李志伟<==退出登录	192.168.0.201	2024-11-26 14:36:15.632173	李志伟
+604	1	15652799458=>!密码错误	192.168.0.201	2024-11-26 14:36:28.478631	15652799458
+605	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-26 14:36:28.481538	wangyanchuan
+606	1	15652799458=>!密码错误	192.168.0.201	2024-11-26 14:36:38.279258	15652799458
+607	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-26 14:36:38.280326	wangyanchuan
+608	1	15652799458=>!密码错误	192.168.0.201	2024-11-26 14:36:38.809576	15652799458
+609	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-26 14:36:38.812435	wangyanchuan
+610	1	15652799458=>!密码错误	192.168.0.201	2024-11-26 14:36:47.566753	15652799458
+611	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-26 14:36:47.567873	lizhiwei
+612	1	15652799458=>!密码错误	192.168.0.201	2024-11-26 14:36:55.025452	15652799458
+613	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-26 14:36:55.026647	lizhiwei
+614	1	15652799458=>!密码错误	192.168.0.201	2024-11-26 14:36:56.207629	15652799458
+615	3	调用接口/user/login 出错：密码错误！	192.168.0.201	2024-11-26 14:36:56.208659	wangyanchuan
+616	1	李志伟==>登录成功	192.168.0.201	2024-11-26 14:37:05.219593	18511047985
+617	1	李志伟==>登录成功	192.168.1.43	2024-11-26 14:39:08.301319	18511047985
+618	1	李志伟<==退出登录	192.168.0.201	2024-11-26 14:43:21.088488	李志伟
+619	1	1562799458=>!手机号不存在	192.168.0.201	2024-11-26 14:43:53.046867	1562799458
+620	3	调用接口/user/login 出错：手机号未注册！	192.168.0.201	2024-11-26 14:43:53.047795	lizhiwei
+621	1	朱佳琳==>登录成功	192.168.0.201	2024-11-26 14:44:01.413166	15652799458
+622	1	朱佳琳<==退出登录	192.168.0.201	2024-11-26 14:44:05.881224	朱佳琳
+623	1	李志伟==>登录成功	192.168.0.201	2024-11-26 14:44:52.032841	18511047985
+624	1	曹学谦==>登录成功	192.168.0.201	2024-11-26 15:03:01.96796	18811049897
+625	1	吴涛==>登录成功	192.168.0.201	2024-11-26 16:10:32.176171	15001339523
+626	1	曹学谦==>登录成功	192.168.0.201	2024-11-26 16:12:23.17908	18811049897
+\.
+
+
+--
+-- Data for Name: t_log_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_log_type (id, log_type_name) FROM stdin;
+1	登录日志
+2	操作日志
+3	错误日志
+\.
+
+
+--
+-- Data for Name: t_state; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_state (id, name, "order") FROM stdin;
+1	一级审批	0
+2	二级审批	1
+3	三级审批	2
+4	办结	3
+5	已关闭	4
+\.
+
+
+--
+-- Data for Name: t_step; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_step (id, start_state, end_state, operator_id, create_time, remark, next_id, app_id) FROM stdin;
+51	2	3	055120096026033148	2024-11-16 13:23:53.11538	\N	1732245041696295	41
+52	1	2	173224504030837787	2024-11-16 18:52:42.343187	\N	160308385229342682	42
+53	1	2	173224504030837787	2024-11-16 18:56:04.45297	\N	160308385229342682	43
+54	1	2	173224504030837787	2024-11-16 18:59:19.697969	\N	160308385229342682	44
+55	2	1	160308385229342682	2024-11-16 20:49:35.819492	核实数据	173224504030837787	44
+56	2	3	160308385229342682	2024-11-16 20:50:09.749363	GONG A	1732245041696295	42
+57	2	3	160308385229342682	2024-11-16 20:50:58.563851	8盒	1732245041696295	43
+58	2	3	160308385229342682	2024-11-16 20:52:28.759532	\N	1732245041696295	45
+59	2	3	160308385229342682	2024-11-16 20:53:04.431494	\N	1732245041696295	46
+60	2	3	160308385229342682	2024-11-16 21:26:48.168432	\N	1732245041696295	47
+61	2	3	0615521317751130	2024-11-17 10:22:06.169444	\N	1732245041696295	48
+62	1	2	173224504030837787	2024-11-17 17:42:07.013632	\N	160308385229342682	49
+63	3	2	1732245041696295	2024-11-18 08:59:03.80526	将总费用716填入其他费用中	055120096026033148	41
+64	3	4	1732245041696295	2024-11-18 08:59:23.59372	同意	-1	48
+65	3	4	1732245041696295	2024-11-18 08:59:54.070397	同意	-1	42
+66	3	4	1732245041696295	2024-11-18 09:00:18.173893	同意	-1	43
+67	3	4	1732245041696295	2024-11-18 09:00:41.376111	同意	-1	45
+68	3	4	1732245041696295	2024-11-18 09:00:53.797671	同意	-1	46
+69	3	4	1732245041696295	2024-11-18 09:01:59.161552	同意，但是下次不能合并申请	-1	47
+70	2	1	160308385229342682	2024-11-18 10:15:53.914805	金额及备注	173224504030837787	49
+71	1	2	173224504030837787	2024-11-18 11:15:23.529266	\N	160308385229342682	50
+72	2	3	160308385229342682	2024-11-18 13:38:03.086152	同意	1732245041696295	50
+73	1	2	2945616605941327	2024-11-18 14:15:56.899575	\N	160308385229342682	51
+74	2	3	160308385229342682	2024-11-18 14:21:38.350478	同意	1732245041696295	51
+75	3	1	1732245041696295	2024-11-19 11:20:57.087988	买的什么酒？酒水种类怎么不填的？单价及数量都需要填写。如果非公司规定的酒，需要向王总汇报。	173224504030837787	50
+76	3	4	1732245041696295	2024-11-19 11:21:14.64223	同意	-1	51
+77	1	2	2945616605941327	2024-11-19 11:56:52.08763	\N	160308385229342682	52
+78	1	2	173224504030837787	2024-11-19 17:06:07.728663	\N	160308385229342682	53
+79	2	3	201017690521444006	2024-11-20 09:04:44.310939	\N	1732245041696295	54
+80	2	3	160308385229342682	2024-11-20 09:06:15.485769	同意	1732245041696295	53
+81	2	3	160308385229342682	2024-11-20 09:06:51.305745	代驾、香烟	1732245041696295	52
+82	3	1	1732245041696295	2024-11-20 09:40:54.53732	单价及数量要填写	2945616605941327	52
+83	3	1	1732245041696295	2024-11-20 09:41:12.669265	备注要简要说明	173224504030837787	53
+84	3	4	1732245041696295	2024-11-20 09:41:48.363402	同意	-1	54
+85	1	2	173224504030837787	2024-11-20 09:48:17.241383	\N	160308385229342682	55
+86	1	2	085258422035647797	2024-11-20 17:18:40.787224	\N	1732245041696295	56
+87	3	4	1732245041696295	2024-11-20 17:25:27.26042	同意	-1	56
+88	3	4	055120096026033148	2024-11-21 08:39:03.582064	\N	-1	57
+89	2	3	0615521317751130	2024-11-21 15:12:47.242128	\N	1732245041696295	58
+90	2	3	0615521317751130	2024-11-21 15:15:21.244548	\N	1732245041696295	59
+91	3	4	1732245041696295	2024-11-21 15:41:29.939687	同意	-1	59
+92	3	4	1732245041696295	2024-11-21 15:41:43.936431	同意	-1	58
+93	2	3	160308385229342682	2024-11-21 18:59:20.378614	同意	1732245041696295	55
+94	2	3	160308385229342682	2024-11-21 19:01:17.071426	\N	1732245041696295	60
+95	2	3	160308385229342682	2024-11-21 19:03:58.873366	\N	1732245041696295	61
+96	2	3	160308385229342682	2024-11-21 19:05:04.809485	\N	1732245041696295	62
+97	3	4	1732245041696295	2024-11-22 08:25:27.85626	同意	-1	55
+98	3	4	1732245041696295	2024-11-22 08:26:18.974291	同意	-1	61
+99	3	4	1732245041696295	2024-11-22 08:26:41.2961	同意	-1	62
+100	3	2	1732245041696295	2024-11-22 08:27:28.762762	事由不对，如果是招待住宿，不选这个。	160308385229342682	60
+101	1	2	294606554536735436	2024-11-22 09:40:01.466004	\N	1732245041696295	63
+102	2	3	160308385229342682	2024-11-22 10:05:43.685458	\N	1732245041696295	64
+103	1	2	085258422035647797	2024-11-22 10:27:40.92733	\N	1732245041696295	65
+104	3	4	1732245041696295	2024-11-22 14:29:19.216462	同意	-1	64
+105	2	1	1732245041696295	2024-11-22 14:51:44.43639	核实	294606554536735436	63
+106	3	4	1732245041696295	2024-11-22 14:51:53.052656	同意	-1	65
+107	1	2	294606554536735436	2024-11-22 15:54:23.490042	已核实并修改	1732245041696295	63
+108	3	4	1732245041696295	2024-11-25 08:49:54.06785	同意	-1	63
+109	1	2	2945616605941327	2024-11-25 09:31:37.75126	已按要求填写	160308385229342682	52
+110	3	4	160308385229342682	2024-11-25 09:43:47.276907	同意	-1	52
+111	1	2	2945616605941327	2024-11-25 09:50:11.858091	\N	160308385229342682	66
+112	2	3	160308385229342682	2024-11-25 09:52:17.358581	同意，8r	1732245041696295	66
+113	2	3	160308385229342682	2024-11-25 10:01:08.031696	请终止本流程	1732245041696295	60
+114	1	2	085258422035647797	2024-11-25 15:43:34.266076	\N	1732245041696295	67
+115	1	2	212245440526387850	2024-11-25 16:14:09.280655	\N	160308385229342682	68
+116	1	2	212245440526387850	2024-11-25 16:15:03.702064	\N	160308385229342682	69
+117	1	2	212245440526387850	2024-11-25 16:16:25.947228	\N	160308385229342682	70
+118	3	4	1732245041696295	2024-11-25 17:00:54.617767	同意，贺兰，盐池AM	-1	66
+119	2	1	1732245041696295	2024-11-25 17:01:33.655115	核实	085258422035647797	67
+120	3	4	160308385229342682	2024-11-26 08:44:43.477202	孙芳内蒙	-1	68
+121	3	4	160308385229342682	2024-11-26 08:48:02.277619	孙芳内蒙三方	-1	69
+122	1	2	0s13951296921732602197287	2024-11-26 15:05:23.123273	\N	2743140222780908	71
+123	2	3	160308385229342682	2024-11-26 15:36:50.848513	同意 孙芳，内蒙	1732245041696295	70
+124	3	4	1732245041696295	2024-11-26 16:10:53.608274	同意	-1	70
+\.
+
+
+--
+-- Data for Name: t_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_user (userid, username, phone, mail, realname, password, create_time, dept_id, title, work_place, remark, active, admin, boss, leader) FROM stdin;
+2761312727843319	liyin	18600596026	562753628@qq.com	李寅	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:53.563157	69570208	分公司副总经理			1	0	0	0
+1732245041696295	wutao	15001339523	282754574@qq.com	吴涛	$2a$10$OZaBX2zoEogCr3A.D7Xr8OWsl8Unptu3jLCVlGTNy1UOccn0eCQ3m	2024-11-07 12:41:04.065953	69608085	分公司总经理			1	0	0	0
+160308385229342682	wangyanchuan	15010854176	370464100@qq.com	王炎川	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:53.567982	69570208	分公司总经理			1	1	0	0
+055120096026033148	caohualong	18610043835	chlcxj@sina.com	曹化龙	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:58.129643	913747391	分公司总经理			1	1	0	1
+0s13951296921732602197287	18811049897	18811049897		曹学谦	$2a$10$WuGhFFFnrvxrqf9WWg7eAevD2tfp4e/j7e89N4n5O2qLN3HjELjDK	2024-11-26 14:23:17.290103	\N	\N	\N	\N	1	\N	\N	\N
+0s13951296921732602352579	13323047018	13323047018		郭森	$2a$10$BqO9kpAehQ3fWYHmU4Sdo.yIAw5Aub0pDkIwZGbQw.nEOyRjuJBT6	2024-11-26 14:25:52.579878	\N	\N	\N	\N	1	\N	\N	\N
+190061651726255035	lixinzhi	15001360098	xinzhili2003@163.com	李新芝	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:01.6478	67586935	财务总监			1	0	0	0
+2743140222780908	zhangbin	18801023339	515293298@qq.com	张斌	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:01.858272	395129692	分公司总经理			1	0	0	0
+173224504030837787	douyapeng	18629036453	787597836@qq.com	窦亚鹏	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.56609	499885917	分公司总经理助理			1	1	0	0
+0615521317751130	sunxiao	15210951140	sunxiao0817@163.com	孙晓	$2a$10$Ws4hZsx6bKPzNZz1hmRFY.mJ6Vvg9zLo1VaMhyyTTrL4/qRejn5XS	2024-11-07 12:41:08.802363	299921210	分公司总经理			1	0	0	0
+2945616605941327	wangqiang	18695247141	1377547163@qq.com	王强	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.569746	499885917	技术员			1	0	0	0
+0s13951296921732602267275	13488798706	13488798706		顾吉伟	$2a$10$/sQvQMOxWuO7QuX/JqAaf.b.ulvBqn074H8y7DQe.Oe5/anUjE6Aq	2024-11-26 14:24:27.276453	\N	\N	\N	\N	1	\N	\N	\N
+485340663021180126	weijiaxin	17709020205	2692415803@qq.com	卫佳歆	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.583781	499885917	技术员			1	0	0	0
+0632593502781128	zhangchen	18611188919	chen4956@hotmail.com	张晨	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.792939	395245526	分公司总经理			1	0	0	0
+33574553702266	zhouhong	18610306441		周红	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.796433	395245526	部门副经理			1	0	0	0
+2949653960784379	zhangmeng	18047681663		张猛	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.79934	395245526	技术员			1	0	0	0
+01344408093126195446	lizhiwei	18511047985		李志伟	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:08.148183	913907009	技术员			1	1	0	0
+2319042964945008	wangtao	13146742869	51211061@qq.com	王涛	$2a$10$nFpbBtxn0cT7QRmjORuu7uoSuj.agidRR5YbmCKrMEJCn8DbhA4I2	2024-11-07 12:41:12.669509	67586938	副主任			1	0	0	0
+201017690521444006	kuangxiumei	13683361742	31363504@qq.com	匡秀梅	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:12.664427	67586938	主任			1	0	0	1
+0s13951296921732602946377	15652799458	15652799458		朱佳琳	$2a$10$nu5o77FQAd3vnU9dFAejrehrSI7wc3fqHH2N73YEzrTBcI9hXfSG2	2024-11-26 14:35:46.37924	\N	\N	\N	\N	1	\N	\N	\N
+171908432337655172	chenbeiping	18519303176	382554078@qq.com	陈北平	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:12.876838	\N	部门经理	北京市海淀区北太平路16号院		1	0	0	0
+0s13951296921732603544216	18201684410	18201684410		耿松卓	$2a$10$CeKxLgQ6S4XwVBoBdfFKlelfsOP8KNEfW2swg0ekLDU/SAKZARXOC	2024-11-26 14:45:44.217436	\N	\N	\N	\N	1	\N	\N	\N
+3965112220092396	renyafeng	18911065162	710269589@qq.com	任亚锋	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:12.884921	\N	副主任			1	1	0	0
+233953542333023287	miaozhibo	13126577765		苗智博	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:13.504266	\N	部门经理			1	0	0	1
+524063493426251057	lichangke	18511096980	1793585625@qq.com	李昌柯	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:13.716218	\N	部门经理			1	0	0	1
+205303261026309260	lizechen	19920070841	19920070841@163.com	李泽琛	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:13.721712	\N	webGIS工程师			1	1	0	0
+01064102452424839462	chengguoping	15111081904	504181625@qq.com	成国平	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:13.728454	\N	研发工程师			1	0	0	0
+2123461119941128	wangping	15533259688	1178559004@qq.com	王平	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:53.902284	\N	部门经理			1	0	0	1
+173224503526144870	zhushaowu	15001369625	719951315@qq.com	朱少武	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:54.825729	\N	部门经理			1	0	0	1
+212245440526387850	lishengnan	13810522967		李盛男	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:57.33475	\N	市场助理			1	1	0	0
+014548471030344360	shichunjian	15732031079		石春建	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:58.337401	\N	部门经理	北京市海淀区北太平路16号院		1	0	0	1
+183352612726309861	lihaonan	15230669185		李浩楠	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:58.532599	\N	总经理助理/工程一部经理			1	1	0	1
+192635125424154419	zhangzizheng	13668268801		张子正	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:58.724731	\N	市场经理			1	0	0	0
+030929264920178785	wutianbao	18408295276	436937075@qq.com	伍天宝	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:40:59.11418	\N	部门经理			1	0	0	1
+1504212759857559	zhuyu	18291482084		朱雨	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:03.040602	\N	部门经理			1	0	0	0
+176019105136699210	guoshengpei	17600060061		郭胜培	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:04.951594	\N	部门经理			1	0	0	0
+294606554536735436	xinghequn	18031412829		邢贺群	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:05.359668	\N	部门经理			1	0	0	0
+1607386432-745185870	gaoyouying	13612635216	348524772@qq.com	高有英	$2a$10$Izs.0Tr53EINT3yIP2fsmu6oFvMMqWyaeQxSXBIZZyGSWgqDiKSy2	2024-11-07 12:41:09.198375	\N	分公司总经理助理			1	0	0	0
+01091837234721514912	zhoumengde	18042820205		周孟德	$2a$10$C27zk5EJxG49yallsg3Ma.7XvoicjRuOSjtP0dMuZjevJaclvTCWO	2024-11-07 12:41:09.202265	\N	部门经理			1	0	0	0
+085258422035647797	zhaoyangyang	15101100462	591018630@qq.com	赵杨杨	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:06.664401	\N	分公司总经理助理兼市场部经理			1	0	0	0
+252929563823302648	yaojinpeng	18811044151	1013838818@qq.com	姚金鹏	$2a$10$SIt.fhlJvxYEQQ9dGrS.YOPvld0FCckURiRVrXYGEZRekYdKKnh6G	2024-11-07 12:41:07.017086	\N	项目经理			1	0	0	0
+\.
+
+
+--
+-- Data for Name: t_user_dept_id; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.t_user_dept_id (userid, dept_id) FROM stdin;
+1732245041696295	69608085
+176019105136699210	69608085
+252929563823302648	69608085
+085258422035647797	69608085
+294606554536735436	69608085
+0615521317751130	299921210
+01091837234721514912	299921210
+1607386432-745185870	299921210
+160308385229342682	499885917
+173224504030837787	499885917
+2945616605941327	499885917
+485340663021180126	499885917
+2743140222780908	395129692
+1504212759857559	395129692
+055120096026033148	913747391
+014548471030344360	913747391
+192635125424154419	913747391
+183352612726309861	913747391
+030929264920178785	913747391
+0632593502781128	395245526
+33574553702266	395245526
+2949653960784379	395245526
+01344408093126195446	913907009
+160308385229342682	69570208
+2761312727843319	69570208
+173224503526144870	69570208
+2123461119941128	69570208
+212245440526387850	69570208
+201017690521444006	67586938
+2319042964945008	67586938
+233953542333023287	67586938
+3965112220092396	67586938
+524063493426251057	67586938
+171908432337655172	67586938
+205303261026309260	67586938
+01064102452424839462	67586938
+190061651726255035	67586935
+1732245041696295	913907009
+0s13951296921732602197287	395129692
+0s13951296921732602267275	395129692
+0s13951296921732602352579	395129692
+0s13951296921732602946377	395129692
+0s13951296921732603544216	395129692
+\.
+
+
+--
+-- Name: g_ybssh_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.g_ybssh_id_seq', 202, true);
+
+
+--
+-- Name: t_application_base_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_application_base_id_seq', 71, true);
+
+
+--
+-- Name: t_dept_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_dept_id_seq', 33, true);
+
+
+--
+-- Name: t_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_log_id_seq', 626, true);
+
+
+--
+-- Name: t_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_menu_id_seq', 1, false);
+
+
+--
+-- Name: t_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_role_id_seq', 1, false);
+
+
+--
+-- Name: t_state_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_state_id_seq', 1, false);
+
+
+--
+-- Name: t_step_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_step_id_seq', 124, true);
+
+
+--
+-- Name: t_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.t_user_id_seq', 4, true);
+
+
+--
+-- Name: t_application_base t_application_base_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_application_base
+    ADD CONSTRAINT t_application_base_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_application_report t_application_report_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_application_report
+    ADD CONSTRAINT t_application_report_pkey PRIMARY KEY (appid);
+
+
+--
+-- Name: t_dept t_dept_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_dept
+    ADD CONSTRAINT t_dept_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_invoice_type t_invoice_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_invoice_type
+    ADD CONSTRAINT t_invoice_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_log t_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_log
+    ADD CONSTRAINT t_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_log_type t_log_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_log_type
+    ADD CONSTRAINT t_log_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_state t_state_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_state
+    ADD CONSTRAINT t_state_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_step t_step_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_step
+    ADD CONSTRAINT t_step_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: t_user t_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_user
+    ADD CONSTRAINT t_user_pkey PRIMARY KEY (userid);
+
+
+--
+-- Name: t_application_base_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_application_base_id_idx ON public.t_application_base USING btree (id);
+
+
+--
+-- Name: t_application_base r_insert_ignore; Type: RULE; Schema: public; Owner: postgres
+--
+
+CREATE RULE r_insert_ignore AS
+    ON INSERT TO public.t_application_base
+   WHERE (EXISTS ( SELECT 1
+           FROM public.t_application_base
+          WHERE (t_application_base.id = new.id))) DO INSTEAD NOTHING;
+ALTER TABLE public.t_application_base DISABLE RULE r_insert_ignore;
+
+
+--
+-- Name: t_step app_id_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_step
+    ADD CONSTRAINT app_id_id FOREIGN KEY (app_id) REFERENCES public.t_application_base(id) ON DELETE CASCADE;
+
+
+--
+-- Name: t_application_report app_id_report; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_application_report
+    ADD CONSTRAINT app_id_report FOREIGN KEY (appid) REFERENCES public.t_application_base(id) ON DELETE CASCADE;
+
+
+--
+-- Name: t_user dept_id_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_user
+    ADD CONSTRAINT dept_id_id FOREIGN KEY (dept_id) REFERENCES public.t_dept(id) ON UPDATE SET NULL ON DELETE SET NULL;
+
+
+--
+-- Name: t_dept__manager dept_id_id1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_dept__manager
+    ADD CONSTRAINT dept_id_id1 FOREIGN KEY (dept_id) REFERENCES public.t_dept(id) ON DELETE CASCADE;
+
+
+--
+-- Name: t_user_dept_id user_dept_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_user_dept_id
+    ADD CONSTRAINT user_dept_id FOREIGN KEY (dept_id) REFERENCES public.t_dept(id) ON DELETE CASCADE;
+
+
+--
+-- Name: t_dept__manager user_user_id1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_dept__manager
+    ADD CONSTRAINT user_user_id1 FOREIGN KEY (userid) REFERENCES public.t_user(userid) ON DELETE CASCADE;
+
+
+--
+-- Name: t_user_dept_id user_userid; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_user_dept_id
+    ADD CONSTRAINT user_userid FOREIGN KEY (userid) REFERENCES public.t_user(userid) ON DELETE CASCADE;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
